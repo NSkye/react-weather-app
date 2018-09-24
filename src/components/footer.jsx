@@ -13,7 +13,7 @@ class Footer extends Component {
   render() { 
     return (
       <FooterStyled>
-          FOOTER
+        <i className="wi wi-day-sunny"></i>
       </FooterStyled>
     );
   }

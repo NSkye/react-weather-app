@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import ymaps from 'ymaps';
 import { connect } from 'react-redux';
 
+import { addLocation, toggleSelectLocation } from '../store/actions';
+
 const MapYandexStyled = styled.section`
   position: relative;
   min-height: 100%;
@@ -36,47 +38,41 @@ class MapYandex extends Component {
   constructor(props) {
     super(props);
     this.mapRef = React.createRef();
+    this.map = null;
   }
-
-  map = null
 
   static propTypes = {
     coordinates: PropTypes.arrayOf(PropTypes.number),
     zoom: PropTypes.number,
-    changeCoordinates: PropTypes.func,
+    addLocationItem: PropTypes.func,
     toggleSelectLocation: PropTypes.func,
     selectLocation: PropTypes.bool
   }
 
-  componentDidMount() {
-    ymaps.load('https://api-maps.yandex.ru/2.1/?lang=en_RU')
-      .then(maps => {
-        const map = new maps.Map(this.mapRef.current, {
-          center: this.props.coordinates,
-          zoom: this.props.zoom,
-          controls: [],
-          type: 'yandex#hybrid'
-        });
-        this.map = map;
-        return map;
-      })
-      .then(map => {
-        map.events.add('click', e => this.props.changeCoordinates(e.get('coords')));
-      })
-      .catch(error => {
-        //eslint-disable-next-line
-        console.log('Can not load map: ', error)
-      });
+  async componentDidMount() {
+    let maps = null;
+    maps = await ymaps.load('https://api-maps.yandex.ru/2.1/?lang=en_RU');
+    this.map = new maps.Map(this.mapRef.current, {
+      center: this.props.coordinates,
+      zoom: this.props.zoom,
+      controls: [],
+      type: 'yandex#hybrid'
+    });
+    this.map.events.add('click', e => {
+      const coordinates = e.get('coords');
+      this.props.toggleSelectLocation();
+      this.props.addLocationItem(coordinates);
+    });
   }
 
   componentDidUpdate() {
-    if (this.map) {
-      this.map.setCenter(this.props.coordinates);
-      if (this.props.selectLocation) {
-        this.map.controls.add('searchControl');
-      } else {
-        this.map.controls.remove('searchControl');
-      }
+    if (!this.map) return;
+    this.map.setCenter(this.props.coordinates, this.props.zoom || null);
+
+    if (this.props.selectLocation) {
+      this.map.controls.add('searchControl');
+    } else {
+      this.map.controls.remove('searchControl');
     }
   }
 
@@ -106,8 +102,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeCoordinates: newCoordinates => dispatch({ type: 'CHANGE_COORDINATES', value: newCoordinates }),
-    toggleSelectLocation: () => dispatch({ type: 'TOGGLE_SELECT_LOCATION' })
+    addLocationItem: coordinates => dispatch(addLocation(coordinates)),
+    toggleSelectLocation: () => dispatch(toggleSelectLocation())
   };
 };
 
