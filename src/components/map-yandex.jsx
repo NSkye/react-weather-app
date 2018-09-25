@@ -42,6 +42,10 @@ class MapYandex extends Component {
     this.map = null;
   }
 
+  state = {
+    success: true
+  }
+
   static propTypes = {
     coordinates: PropTypes.arrayOf(PropTypes.number),
     zoom: PropTypes.number,
@@ -52,7 +56,16 @@ class MapYandex extends Component {
 
   async componentDidMount() {
     let maps = null;
-    maps = await ymaps.load('https://api-maps.yandex.ru/2.1/?lang=en_RU');
+    try {
+      maps = await ymaps.load('https://api-maps.yandex.ru/2.1/?lang=en_RU');
+    } catch (e) {
+      this.setState({
+        ...this.state,
+        success: false
+      });
+      return; 
+    }
+    
     this.map = new maps.Map(this.mapRef.current, {
       center: this.props.coordinates,
       zoom: this.props.zoom,
@@ -79,15 +92,19 @@ class MapYandex extends Component {
 
   render() { 
     return (
-      <MapYandexStyled selectLocation={this.props.selectLocation}>
-        <div 
-          onClick={this.props.toggleSelectLocation} 
-          className="map-blocker"
-        >
-          <span className="map-label">Click anywhere on the map to start adding location.</span>
-        </div>
-        <div className="map-container" ref={this.mapRef} />
-      </MapYandexStyled>
+      <React.Fragment>
+        { this.state.success && 
+          <MapYandexStyled selectLocation={this.props.selectLocation}>
+            <div 
+              onClick={this.props.toggleSelectLocation} 
+              className="map-blocker"
+            >
+              <span className="map-label">Click anywhere on the map to start adding location.</span>
+            </div>
+            <div className="map-container" ref={this.mapRef} />
+          </MapYandexStyled>
+        }
+      </React.Fragment>
     );
   }
 }
