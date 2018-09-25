@@ -5,12 +5,13 @@ import ymaps from 'ymaps';
 import { connect } from 'react-redux';
 
 import { addLocation, toggleSelectLocation } from '../store/actions';
+import { selectMapState } from '../store/reducers';
 
 const MapYandexStyled = styled.section`
   position: relative;
   min-height: 100%;
   width: 50%;
-  @media (max-width: 720px) {
+  @media (max-width: 928px) {
     width: 100%;
   }
   & .map-container {
@@ -44,7 +45,7 @@ class MapYandex extends Component {
   static propTypes = {
     coordinates: PropTypes.arrayOf(PropTypes.number),
     zoom: PropTypes.number,
-    addLocationItem: PropTypes.func,
+    addLocation: PropTypes.func,
     toggleSelectLocation: PropTypes.func,
     selectLocation: PropTypes.bool
   }
@@ -61,7 +62,7 @@ class MapYandex extends Component {
     this.map.events.add('click', e => {
       const coordinates = e.get('coords');
       this.props.toggleSelectLocation();
-      this.props.addLocationItem(coordinates);
+      this.props.addLocation(coordinates);
     });
   }
 
@@ -91,22 +92,11 @@ class MapYandex extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const [ lat, long ] = [ state.map.coordinates[0], state.map.coordinates[1] ];
-  return {
-    coordinates: [lat, long],
-    zoom: state.map.zoom,
-    selectLocation: state.map.selectLocation
-  };
+const mapStateToProps = state => selectMapState(state);
+
+const mapDispatchToProps = {
+  addLocation,
+  toggleSelectLocation
 };
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addLocationItem: coordinates => dispatch(addLocation(coordinates)),
-    toggleSelectLocation: () => dispatch(toggleSelectLocation())
-  };
-};
-
-
  
 export default connect(mapStateToProps, mapDispatchToProps)(MapYandex);

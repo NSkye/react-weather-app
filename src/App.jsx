@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Header from './components/header';
 import MainBlock from './components/main-block';
-import Footer from './components/footer';
+import FooterStyled from './components/footer';
 
 import { connect } from 'react-redux';
 import { addLocation } from './store/actions';
@@ -34,7 +34,7 @@ class App extends Component {
       <AppStyled>
         <Header></Header>
         <MainBlock></MainBlock>
-        <Footer></Footer>
+        <FooterStyled></FooterStyled>
       </AppStyled>
     );
   }

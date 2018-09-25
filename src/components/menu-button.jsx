@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import { connect } from 'react-redux';
+import { selectSideBarState } from '../store/reducers';
+import { toggleSideBar } from '../store/actions';
 
 const MenuButtonStyled = styled.div`
+  display: none;
+  @media(max-width: 928px) {
+    display: block;
+  }
   height: 20px;
   width: 20px;
   position: relative;
@@ -27,7 +35,7 @@ const MenuButtonStyled = styled.div`
   &::after {
     top: 80%;
   }
-  ${ props => props.isActive && css`
+  ${ props => props.open && css`
     &::before,
     &::after,
     & .menu-button__element {
@@ -45,26 +53,29 @@ const MenuButtonStyled = styled.div`
 `;
 
 class MenuButton extends Component {
-  state = { 
-    isActive: false
-  }
-
-  toggleState = () => {
-    this.setState({
-      isActive: !this.state.isActive
-    });
+  
+  static propTypes = {
+    open: PropTypes.bool.isRequired,
+    toggleSideBar: PropTypes.func
   }
 
   render() { 
     return (
       <MenuButtonStyled 
-        onClick={this.toggleState} 
-        isActive={this.state.isActive}
+        onClick={this.props.toggleSideBar} 
+        open={this.props.open}
       >
         < div className="menu-button__element" />
       </MenuButtonStyled>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  open: selectSideBarState(state)
+});
+const mapDispatchToProps = {
+  toggleSideBar
+};
  
-export default MenuButton;
+export default connect(mapStateToProps, mapDispatchToProps)(MenuButton);

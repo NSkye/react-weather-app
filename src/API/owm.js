@@ -24,16 +24,36 @@ function processRecievedData(data) {
   };
 }
 
-export async function fetchWeatherDataCoords(coordinates) {
+export async function fetchWeatherDataCoords(coordinates, signal) {
   const [lat, lon] = coordinates;
   let response;
   let data;
   try {
-    response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=de2fec26642e64c6f6d224ebdffcb8fd`);
+    response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=de2fec26642e64c6f6d224ebdffcb8fd`, {
+      signal
+    });
+    data = await response.json();
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log('error', e);
+  }
+  // eslint-disable-next-line
+  console.log('fetched with API', data);
+  return processRecievedData(data);
+}
+
+export async function fetchWeatherDataQuery(query, signal) {
+  const q = encodeURIComponent(query);
+  let response;
+  let data;
+  try {
+    response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=de2fec26642e64c6f6d224ebdffcb8fd`, {
+      signal
+    });
     data = await response.json();
   } catch (e) {
     // eslint-disable-next-line
     console.log('error', e);
   }
   return processRecievedData(data);
-}
+} 

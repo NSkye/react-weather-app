@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { restoreLocation } from '../store/actions';
+import { selectLocationList, selectSideBarState } from '../store/reducers';
 
 import LocationData from './location-data';
+import LocationListHeader from './location-list-header';
 
 const LocationListStyled = styled.section`
   position: absolute;
@@ -15,26 +17,36 @@ const LocationListStyled = styled.section`
   width: 50%;
   height: 100%;
   background: white;
-  overflow-y: scroll;
-
-  @media(max-width: 720px) {
-    transform: translate(100%, 0);
-    z-index: 1;
+  transition: transform 0.2s ease;
+  z-index: 2;
+  @media (max-width: 927px) {
+    width: 100%;
   }
+  ${ props => !props.open && css`
+    @media (max-width: 927px) {
+      transform: translate(100%, 0);
+      z-index: 1;
+    }
+  `}
 
   & .location-list {
     &__heading {
+      margin: 0;
+      box-sizing: border-box;
       text-align: center;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2)
     }
     &__list {
       display: flex;
+      height: 100%;
       flex-direction: column;
       align-items: center;
       width: 100%;
       margin: 0;
       padding: 0;
+      overflow-y: scroll;
     }
   }
 `;
@@ -42,36 +54,37 @@ const LocationListStyled = styled.section`
 class LocationList extends Component {
   static propTypes = {
     locations: PropTypes.array,
-    restoreLocationItem: PropTypes.func
+    restoreLocation: PropTypes.func,
+    sideBarState: PropTypes.bool
   };
 
   componentDidMount() {
     if (localStorage && localStorage.getItem('LOCATIONS')) {
-      JSON.parse(localStorage.getItem('LOCATIONS')).map(item => this.props.restoreLocationItem(item));
+      // eslint-disable-next-line
+      console.log(JSON.parse(localStorage.getItem('LOCATIONS')));
+      JSON.parse(localStorage.getItem('LOCATIONS')).map(item => this.props.restoreLocation(item));
     }
   }
 
   render() { 
     return (
-      <LocationListStyled>
-        <h2 className='location-list__heading'>Locations</h2>
+      <LocationListStyled open={this.props.sideBarState}>
+        <LocationListHeader />
         <ul className='location-list__list'>
-          { this.props.locations.map(location => <LocationData key={location.key} item={location}></LocationData>) }
+          { this.props.locations.map(location => <LocationData key={location.key} item={location} role='li'></LocationData>) }
         </ul>
       </LocationListStyled>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    restoreLocationItem: locationObj => dispatch(restoreLocation(locationObj))
-  };
-};
+const mapStateToProps = state => ({
+  locations: selectLocationList(state),
+  sideBarState: selectSideBarState(state)
+});
 
-const mapStateToProps = state => {
-  const locations = state.locations.list;
-  return { locations };
+const mapDispatchToProps = {
+  restoreLocation
 };
  
 export default connect(mapStateToProps, mapDispatchToProps)(LocationList);
