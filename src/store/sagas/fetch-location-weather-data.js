@@ -4,20 +4,11 @@ import { applyFetchedData, registerFetchData } from '../actions';
 
 function* fetchWeatherDataWorker(action) {
   let data;
-  try {
-    // eslint-disable-next-line
-    console.log('recieved action:', action);
-    const controller = new AbortController();
-    const signal = controller.signal;
-    yield put(registerFetchData(controller, action.key));
-    const fetchMethod = Array.isArray(action.value) ? fetchWeatherDataCoords : fetchWeatherDataQuery; 
-    data = yield call(fetchMethod, action.value, signal);
-  } catch (e) {
-    // eslint-disable-next-line
-    console.log(e);
-  }
-  // eslint-disable-next-line
-  //console.log('Fetched: ', data);
+  const controller = new AbortController();
+  const signal = controller.signal;
+  yield put(registerFetchData(controller, action.key));
+  const fetchMethod = Array.isArray(action.value) ? fetchWeatherDataCoords : fetchWeatherDataQuery; 
+  data = yield call(fetchMethod, action.value, signal);
   yield put(applyFetchedData(action.key, data));
   
 }

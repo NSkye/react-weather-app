@@ -34,11 +34,8 @@ export async function fetchWeatherDataCoords(coordinates, signal) {
     });
     data = await response.json();
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('error', e);
+    data = null;
   }
-  // eslint-disable-next-line
-  console.log('fetched with API', data);
   return processRecievedData(data);
 }
 
@@ -52,8 +49,7 @@ export async function fetchWeatherDataQuery(query, signal) {
     });
     data = await response.json();
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('error', e);
+    data = null;
   }
   return processRecievedData(data);
 } 

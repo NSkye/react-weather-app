@@ -60,8 +60,6 @@ class LocationList extends Component {
 
   componentDidMount() {
     if (localStorage && localStorage.getItem('LOCATIONS')) {
-      // eslint-disable-next-line
-      console.log(JSON.parse(localStorage.getItem('LOCATIONS')));
       JSON.parse(localStorage.getItem('LOCATIONS')).map(item => this.props.restoreLocation(item));
     }
   }

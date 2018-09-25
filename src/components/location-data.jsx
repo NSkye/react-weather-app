@@ -139,27 +139,26 @@ class LocationData extends Component {
     this.startDataFetching(true);
   }
 
-  render() { 
-    // eslint-disable-next-line
-    console.log(`item ${this.props.item.key} rendered`);
+  render() {
+    const { info } = this.props.item;
     return (
       <LocationDataStyled 
         role={this.props.role} 
         process={this.state.process} 
-        onClick={ () => this.props.item.info && 
-          this.props.focusOnLocation(this.props.item.info.coordinates) 
+        onClick={ () => info && 
+          this.props.focusOnLocation(info.coordinates) 
         }
       >
         <ItemStateDisplay state={this.state.process} />
         { this.state.process == 'displaying' &&
           <React.Fragment>
-            <h3 className='location-data__heading'>{this.props.item.info.name}</h3>
+            <h3 className='location-data__heading'>{info.name}</h3>
             <div className='location-data__info'>
-              <Icon icon={this.props.item.info.icon} />
-              <TempDisplay temp={this.props.item.info.temp} />
-              <WeatherInfo weather={this.props.item.info.weather} 
-                humidity={this.props.item.info.humidity} 
-                wind={this.props.item.info.wind} 
+              <Icon icon={info.icon} />
+              <TempDisplay temp={info.temp} />
+              <WeatherInfo weather={info.weather} 
+                humidity={info.humidity} 
+                wind={info.wind} 
               />
               <i 
                 role="button" 
