@@ -1,2 +1,6 @@
-# react-weather-app
-Simple weather app. Test case for 4xxi company. 
+Simple weather app. Test case for 4xxi company.
+
+- Можно добавлять локации через строку поиска или через карту
+- Можно удалять локации из списка
+- Весь список локацих сохраняется в localStorage
+- При загрузке списка локаций из localStorage, погода в них заново не обновляется, если она обновлялась менее 12 часов назад
