@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
-import { selectSideBarState } from '../store/reducers';
+import { selectSideBarState, selectMapNoErrors } from '../store/reducers';
 import { toggleSideBar } from '../store/actions';
 
 const MenuButtonStyled = styled.div`
   display: none;
-  @media(max-width: 928px) {
-    display: block;
-  }
+  ${ props => props.hasMap && css`
+    @media(max-width: 928px) {
+      display: block;
+    }
+  `}
   height: 20px;
   width: 20px;
   position: relative;
@@ -56,7 +58,8 @@ class MenuButton extends Component {
   
   static propTypes = {
     open: PropTypes.bool.isRequired,
-    toggleSideBar: PropTypes.func
+    toggleSideBar: PropTypes.func,
+    hasMap: PropTypes.bool
   }
 
   render() { 
@@ -64,6 +67,7 @@ class MenuButton extends Component {
       <MenuButtonStyled 
         onClick={this.props.toggleSideBar} 
         open={this.props.open}
+        hasMap={this.props.hasMap}
       >
         < div className="menu-button__element" />
       </MenuButtonStyled>
@@ -72,7 +76,8 @@ class MenuButton extends Component {
 }
 
 const mapStateToProps = state => ({
-  open: selectSideBarState(state)
+  open: selectSideBarState(state),
+  hasMap: selectMapNoErrors(state)
 });
 const mapDispatchToProps = {
   toggleSideBar

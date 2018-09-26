@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import ymaps from 'ymaps';
 import { connect } from 'react-redux';
 
-import { addLocation, toggleSelectLocation } from '../store/actions';
+import { addLocation, toggleSelectLocation, registerMapError } from '../store/actions';
 import { selectMapState } from '../store/reducers';
 
 const MapYandexStyled = styled.section`
@@ -51,6 +51,7 @@ class MapYandex extends Component {
     zoom: PropTypes.number,
     addLocation: PropTypes.func,
     toggleSelectLocation: PropTypes.func,
+    registerMapError: PropTypes.func,
     selectLocation: PropTypes.bool
   }
 
@@ -65,6 +66,7 @@ class MapYandex extends Component {
       });
       //eslint-disable-next-line
       console.log('Can not load the map:' + e.message, e);
+      this.props.registerMapError();
       return;
     }
     
@@ -115,7 +117,8 @@ const mapStateToProps = state => selectMapState(state);
 
 const mapDispatchToProps = {
   addLocation,
-  toggleSelectLocation
+  toggleSelectLocation,
+  registerMapError
 };
  
 export default connect(mapStateToProps, mapDispatchToProps)(MapYandex);

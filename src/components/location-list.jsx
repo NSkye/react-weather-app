@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { restoreLocation } from '../store/actions';
-import { selectLocationList, selectSideBarState } from '../store/reducers';
+import { selectLocationList, selectSideBarState, selectMapNoErrors } from '../store/reducers';
 
 import LocationData from './location-data';
 import LocationListHeader from './location-list-header';
@@ -14,7 +14,7 @@ const LocationListStyled = styled.section`
   right: 0;
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: ${props => props.hasMap ? '50%' : '100%'};
   height: 100%;
   background: white;
   transition: transform 0.2s ease;
@@ -55,7 +55,8 @@ class LocationList extends Component {
   static propTypes = {
     locations: PropTypes.array,
     restoreLocation: PropTypes.func,
-    sideBarState: PropTypes.bool
+    sideBarState: PropTypes.bool,
+    hasMap: PropTypes.bool
   };
 
   componentDidMount() {
@@ -66,7 +67,7 @@ class LocationList extends Component {
 
   render() { 
     return (
-      <LocationListStyled open={this.props.sideBarState}>
+      <LocationListStyled open={this.props.sideBarState} hasMap={this.props.hasMap}>
         <LocationListHeader />
         <ul className='location-list__list'>
           { this.props.locations.map(location => <LocationData key={location.key} item={location} role='li'></LocationData>) }
@@ -78,7 +79,8 @@ class LocationList extends Component {
 
 const mapStateToProps = state => ({
   locations: selectLocationList(state),
-  sideBarState: selectSideBarState(state)
+  sideBarState: selectSideBarState(state),
+  hasMap: selectMapNoErrors(state)
 });
 
 const mapDispatchToProps = {

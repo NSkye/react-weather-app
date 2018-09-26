@@ -19,6 +19,13 @@ export const focusOnLocation = coordinates => ({
 });
 
 /**
+ * Регистрирует ошибку при загрузке карты
+ */
+export const registerMapError = () => ({
+  type: 'REGISTER_ERROR'
+});
+
+/**
  * Включает/отключает интерактивность карты
  */
 export const toggleSelectLocation = () => ({

@@ -7,9 +7,17 @@ const defaultState =  {
 const createKey = ((lastKey = 0) => () => (lastKey++))();
 
 const checkCoordsForEquality = (itemCoordinates, actionValue) => {
-  const [ lat, lon ] = itemCoordinates;
-  const [ latN, lonN ] = actionValue;
-  return lat === latN && lon === lonN;
+  if (typeof itemCoordinates !== typeof actionValue) {
+    return false;
+  }
+
+  if (Array.isArray(itemCoordinates) && Array.isArray(actionValue)) {
+    const [ lat, lon ] = itemCoordinates;
+    const [ latN, lonN ] = actionValue;
+    return lat === latN && lon === lonN;
+  }
+
+  return itemCoordinates === actionValue;
 };
 
 export function locationListReducer (state = defaultState, action) {
