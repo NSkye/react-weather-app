@@ -102,6 +102,15 @@ export const abortFetchData = key => ({
   key
 });
 
+/**
+ * Удаляет AbortController
+ * @param {Number} key ключ итема, для которого делался реквест
+ */
+export const removeRequest = key => ({
+  type: 'REMOVE_REQUEST',
+  key
+});
+
 // SIDEBAR
 
 /**

@@ -16,6 +16,10 @@ export function fetchReducer(state = defaultState, action) {
       newState.fetchRequests[action.key].abort();
       delete newState.fetchRequests[action.key];
       break;
+    case 'REMOVE REQUEST':
+      if (!newState.fetchRequests[action.key]) { break; }
+      delete newState.fetchRequests[action.key];
+      break;
     default:
       break;
   }

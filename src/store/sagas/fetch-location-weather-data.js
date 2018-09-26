@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
 import { fetchWeatherDataCoords, fetchWeatherDataQuery } from '../../API/owm';
-import { applyFetchedData, registerFetchData } from '../actions';
+import { applyFetchedData, registerFetchData, removeRequest } from '../actions';
 
 function* fetchWeatherDataWorker(action) {
   let data;
@@ -10,7 +10,7 @@ function* fetchWeatherDataWorker(action) {
   const fetchMethod = Array.isArray(action.value) ? fetchWeatherDataCoords : fetchWeatherDataQuery; 
   data = yield call(fetchMethod, action.value, signal);
   yield put(applyFetchedData(action.key, data));
-  
+  yield put(removeRequest(action.key));
 }
 
 function* fetchWeatherDataWatcher() {

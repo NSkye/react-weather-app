@@ -63,7 +63,9 @@ class MapYandex extends Component {
         ...this.state,
         success: false
       });
-      return; 
+      //eslint-disable-next-line
+      console.log('Can not load the map:' + e.message, e);
+      return;
     }
     
     this.map = new maps.Map(this.mapRef.current, {
